@@ -1,8 +1,8 @@
 module rods() {
-     translate([0, 0, -60]) union() {
+     rotate([0, 15, 0]) translate([0, 0, -60]) union() {
         rotate([0, -32.5, 0]) cylinder(d=10.5, h=200, center=false, $fn=32);
         rotate([0, -7.5, 0]) cylinder(d=10.5, h=200, center=false, $fn=32);
-        rotate([0, 17.5, 0]) cylinder(d=10.5, h=200, center=false, $fn=32);
+        translate([-2, 0, 0]) rotate([0, 17.5, 0]) cylinder(d=10.5, h=200, center=false, $fn=32);
     }
 }
 
@@ -12,7 +12,7 @@ module screw() {
         union() {
             cylinder(d=3, h=19, $fn=16);
             cylinder(d1=5, d2=3, h=2.5, $fn=32);
-            translate([0,0,14.5]) linear_extrude(height=2.5) circle(r=3.75, $fn=6);
+            translate([0,0,14.1]) linear_extrude(height=3) circle(r=3.75, $fn=6);
         }
     }
 }
@@ -26,19 +26,19 @@ module screw_b() {
 }
 
 module screw_c() {
-    translate([-35, 0, 15]) screw();
+    translate([15, 0, 15]) screw();
 }
 
 module ziptie() {
-    cube([8, 1.5, 100]);
+    cube([8, 2, 100]);
 }    
 
 module ziptie_a() {
-    translate([1, -0.75, -50]) ziptie();
+    translate([2, -1, -50]) ziptie();
 }
 
 module ziptie_b() {
-    translate([-27, -0.75, -50]) ziptie();
+    translate([-27, -1, -50]) ziptie();
 }
 
 module front() {
@@ -74,4 +74,4 @@ module back() {
 }
 
 front();
-translate([0, 5, 0]) back();
+//translate([0, 10, 0]) back();
