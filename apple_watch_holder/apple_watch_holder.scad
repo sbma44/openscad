@@ -50,7 +50,12 @@ module clip() {
     }
 }
 
-//watch();
-translate([-50, 0, 0]) clip();
+$vpt = [0, 0, 0];
+$vpd = 300;
+$vpr = [45, 0, $t * 360];
+render() {
+    translate([47, 0, 0]) watch();
+translate([-15, 0, 0]) clip();
+}
 
     
