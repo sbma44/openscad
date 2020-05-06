@@ -70,4 +70,14 @@ module unit_b() {
     }
 }
 
-unit_a();
+BOX_X = 64;
+BOX_Y = 34;
+BOX_Z = 22;
+
+CONE_DIAM = 11;
+USB_X_OFFSET = 11;
+USB_Y = 8;
+USB_Z = 3;
+
+cube([BOX_X, BOX_Y, BOX_Z]);
+//unit_a();
