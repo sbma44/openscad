@@ -70,20 +70,6 @@ module unit_b() {
     }
 }
 
-BOX_X = 64;
-BOX_Y = 34;
-BOX_Z = 22;
-
-WEMOS_Y = 26;
-
-CONE_DIAM_A = 11;
-CONE_X = 20;
-CONE_DIAM_B = 6.5;
-USB_Y_OFFSET = 11;
-USB_X = 6;
-USB_Y = 8;
-USB_Z = 3;
-
 BUTTON_DIAM = 12;
 BUTTON_Y = 21;
 BUTTON_X = 26.6;
@@ -95,6 +81,22 @@ SCREW_INNER_DIAM = 2.2;
 SCREW_OUTER_DIAM = 3.1;
 SCREW_HOLE_DIAM = (SCREW_INNER_DIAM + SCREW_OUTER_DIAM) / 2;
 
+BOX_X = 64;
+BOX_Y = 34;
+BOX_Z = 22 + BUTTON_Z_CLEARANCE;
+
+WEMOS_Y = 26;
+
+CONE_DIAM_A = 11;
+CONE_X = 20;
+CONE_DIAM_B = 6.5;
+USB_Y_OFFSET = 11;
+USB_X = 6;
+USB_Y = 8;
+USB_Z = 3;
+
+
+
 module screw_anchor(h) {
     difference() {
         cylinder(d=SCREW_HOLE_DIAM + 2, h=h, $fn=64);
@@ -104,14 +106,15 @@ module screw_anchor(h) {
 
 
 
-DEBUG = 1;
+DEBUG = 0;
 if (DEBUG > 0) {
     //#color([100, 100, 0, 0.3]) cube([BOX_X, BOX_Y, BOX_Z]);
     // wemos
-    color([0, 0, 100]) translate([BOX_X - 34, 2, BOX_Z - USB_Z]) cube([34, WEMOS_Y, 1.2]); 
+    color([0, 0, 0.8]) translate([BOX_X - 34, 2, BOX_Z - USB_Z]) cube([34, WEMOS_Y, 1.2]); 
+
     // perfboard
     difference() {
-        color([100, 100, 0]) translate([BOX_X - 31 - 7, 0, BOX_Z - USB_Z - 10.5]) cube([31, BOX_Y, 1.5]); 
+        color([0.8, 0.8, 0]) translate([BOX_X - 31 - 7, 0, BOX_Z - USB_Z - 10.5]) cube([31, BOX_Y, 1.5]); 
         translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, 0]) cylinder(d=3.3, h=20, $fn=64);
     }
     // usb connector
@@ -120,12 +123,9 @@ if (DEBUG > 0) {
     color("gray") translate([CONE_X, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, -90, 0]) cylinder(r1=CONE_DIAM_B * 0.5, r2=CONE_DIAM_A * 0.5, h=CONE_X, $fn=128);
     
     // button
-    translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), -1 * BUTTON_Z_CLEARANCE]) {
-        #cube([BUTTON_X, BUTTON_Y, BUTTON_Z_CLEARANCE]);
-        translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
-        ANCHOR_HEIGHT=20;
-        translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, BUTTON_Z_CLEARANCE]) screw_anchor(ANCHOR_HEIGHT);
-        translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, BUTTON_Z_CLEARANCE]) screw_anchor(ANCHOR_HEIGHT);
+    translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), 0]) {
+        cube([BUTTON_X, BUTTON_Y, BUTTON_Z_CLEARANCE]);
+        //translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
     }
 }
 
@@ -143,21 +143,60 @@ module case() {
     }
 }
 
-#union() {    
-    difference() {
-        case();
-        translate([-10, -10, BOX_Z * 0.5]) cube([100, 100, 50]);
-        translate([1.5, 3, 3]) resize([BOX_X, BOX_Y, BOX_Z]) case();
-        translate([-5, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, 90, 0]) cylinder(d=CONE_DIAM_A, h=20, $fn=64);   
-    }
-    difference() {
-            intersection() {
-            translate([10, 0, 0]) cube([1, BOX_Y, BOX_Z]);
+module case_bottom() {
+    union() {    
+        difference() {
+            case();
+            translate([-10, -10, BOX_Z - USB_Z - 7.5]) cube([100, 100, 50]);
+            translate([1.5, 2.5, 1.5]) resize([BOX_X, BOX_Y, BOX_Z]) case();
+            translate([-5, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, 90, 0]) cylinder(d=CONE_DIAM_A, h=20, $fn=64);   
+            translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), 0]) translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
+            translate([BOX_X - RADIUS, 5 * HEIGHT, BOX_Z / 2]) rotate([90, 0, 0]) cylinder(d=HOLE_DIAM, h=50, $fn=64);        
+        }
+        intersection() {
+            ANCHOR_HEIGHT=30;
+            union() {
+                translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 1.6]) {
+                    translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
+                    translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
+                }
+                translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, 0]) screw_anchor(BOX_Z - USB_Z - 10.5);
+                translate([(BOX_X - 31 - 7 + 3.7), 3.7, 0]) screw_anchor(BOX_Z - USB_Z - 10.5);
+
+            }
             translate([1.5, 3, 3]) resize([BOX_X, BOX_Y, BOX_Z]) case();
         }
-        color("gray") translate([CONE_X, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, -90, 0]) cylinder(r1=CONE_DIAM_B * 0.5, r2=CONE_DIAM_A * 0.5, h=CONE_X, $fn=128);
-        translate([-10, -10, BOX_Z * 0.5]) cube([100, 100, 50]);
+        difference() {
+            intersection() {
+                translate([10, 0, 0]) cube([1, BOX_Y, BOX_Z]);
+                translate([1.5, 2.5, 1.5]) resize([BOX_X, BOX_Y, BOX_Z]) case();
+            }
+            color("gray") translate([CONE_X, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, -90, 0]) cylinder(r1=CONE_DIAM_B * 0.5, r2=CONE_DIAM_A * 0.5, h=CONE_X, $fn=128);
+            translate([-10, -10, BOX_Z - USB_Z - 7.5]) cube([100, 100, 50]);
+        }
+        translate([BOX_X - RADIUS, (-1 * HEIGHT) - 3, BOX_Z / 2]) rotate([90, 0, 0]) detent_wheel(0);
     }
 }
 
-//unit_a(); 
+module case_top() {
+    union() {    
+        difference() {
+            case();
+            translate([-10, -10, (BOX_Z - USB_Z - 7.5) - 50]) cube([100, 100, 50]);
+            translate([1.5, 2.5, 3]) resize([BOX_X, BOX_Y, BOX_Z]) case();
+            translate([-5, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, 90, 0]) cylinder(d=CONE_DIAM_A, h=20, $fn=64);
+            translate([BOX_X - USB_X, (0.5 * WEMOS_Y) - (0.5 * USB_Y) - 1, BOX_Z - USB_Z - 2]) cube([USB_X + 10, USB_Y + 6, USB_Z + 6]);
+            
+        }
+        difference() {
+            intersection() {
+                translate([10, 0, 0]) cube([1, BOX_Y, BOX_Z]);
+                translate([1.5, 2.5, 3]) resize([BOX_X, BOX_Y, BOX_Z]) case();
+            }
+            color("gray") translate([CONE_X, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, -90, 0]) cylinder(r1=CONE_DIAM_B * 0.5, r2=CONE_DIAM_A * 0.5, h=CONE_X, $fn=128);
+            translate([-10, -10, (BOX_Z - USB_Z - 7.5) - 50]) cube([100, 100, 50]);        }
+    }
+}
+
+case_top();
+//case_bottom();
