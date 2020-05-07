@@ -143,6 +143,16 @@ module case() {
     }
 }
 
+module connector_tab() {
+    difference() {
+        union() {
+            cylinder(d=8, h=5, $fn=64);
+            translate([0, -4, 0]) cube([4, 8, 5]);
+        }
+        cylinder(d=4, h=5, $fn=64);
+    }
+}
+
 module case_bottom() {
     union() {    
         difference() {
@@ -153,6 +163,11 @@ module case_bottom() {
             translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), 0]) translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
             translate([BOX_X - RADIUS, 5 * HEIGHT, BOX_Z / 2]) rotate([90, 0, 0]) cylinder(d=HOLE_DIAM, h=50, $fn=64);        
         }
+        // tabs
+        translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 12.5]) rotate([0, 0, 90]) connector_tab();
+        translate([BOX_X - 31 - 4, BOX_Y + 6, BOX_Z - USB_Z - 12.5]) rotate([0, 0, -90]) connector_tab();
+        translate([BOX_X + 6, BOX_Y / 2, BOX_Z - USB_Z - 12.5]) rotate([0, 0, 180]) connector_tab();        
+
         intersection() {
             ANCHOR_HEIGHT=30;
             union() {
@@ -188,6 +203,12 @@ module case_top() {
             translate([BOX_X - USB_X, (0.5 * WEMOS_Y) - (0.5 * USB_Y) - 1, BOX_Z - USB_Z - 2]) cube([USB_X + 10, USB_Y + 6, USB_Z + 6]);
             
         }
+        
+        // tabs
+        translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 10.5]) rotate([0, 0, 90]) connector_tab();
+        translate([BOX_X - 31 - 4, BOX_Y + 6, BOX_Z - USB_Z - 10.5]) rotate([0, 0, -90]) connector_tab();        
+        translate([BOX_X + 6, BOX_Y / 2, BOX_Z - USB_Z - 10.5]) rotate([0, 0, 180]) connector_tab();        
+        
         difference() {
             intersection() {
                 translate([10, 0, 0]) cube([1, BOX_Y, BOX_Z]);
@@ -198,5 +219,6 @@ module case_top() {
     }
 }
 
-case_top();
-//case_bottom();
+translate([0, 0, 5]) case_top();
+case_bottom();
+
