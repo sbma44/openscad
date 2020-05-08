@@ -161,7 +161,7 @@ module case_bottom() {
             translate([1.5, 2.5, 1.5]) resize([BOX_X, BOX_Y, BOX_Z]) case();
             translate([-5, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, 90, 0]) cylinder(d=CONE_DIAM_A, h=20, $fn=64);   
             translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), 0]) translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
-            translate([BOX_X - RADIUS, 5 * HEIGHT, BOX_Z / 2]) rotate([90, 0, 0]) cylinder(d=HOLE_DIAM, h=50, $fn=64);        
+            translate([BOX_X - RADIUS, 5 * HEIGHT, BOX_Z / 2]) rotate([90, 0, 0]) cylinder(d=HOLE_DIAM + 2, h=50, $fn=64);        
         }
         // tabs
         translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 12.5]) rotate([0, 0, 90]) connector_tab();
@@ -171,15 +171,15 @@ module case_bottom() {
         intersection() {
             ANCHOR_HEIGHT=30;
             union() {
-                translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 1.6]) {
+                translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) {
                     translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
                     translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
                 }
-                translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, 0]) screw_anchor(BOX_Z - USB_Z - 10.5);
-                translate([(BOX_X - 31 - 7 + 3.7), 3.7, 0]) screw_anchor(BOX_Z - USB_Z - 10.5);
+                translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, -1.5]) screw_anchor(BOX_Z - USB_Z - 10.5);
+                translate([(BOX_X - 31 - 7 + 3.7), 3.7, -1.5]) screw_anchor(BOX_Z - USB_Z - 10.5);
 
             }
-            translate([1.5, 3, 3]) resize([BOX_X, BOX_Y, BOX_Z]) case();
+            translate([1.5, 2.5, 1.5]) resize([BOX_X, BOX_Y, BOX_Z]) case();
         }
         difference() {
             intersection() {
@@ -219,6 +219,5 @@ module case_top() {
     }
 }
 
-translate([0, 0, 5]) case_top();
+//translate([0, 0, 5]) case_top();
 case_bottom();
-
