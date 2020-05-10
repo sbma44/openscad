@@ -205,9 +205,9 @@ module case_top() {
         }
         
         // tabs
-        translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 10.5]) rotate([0, 0, 90]) connector_tab();
-        translate([BOX_X - 31 - 4, BOX_Y + 6, BOX_Z - USB_Z - 10.5]) rotate([0, 0, -90]) connector_tab();        
-        translate([BOX_X + 6, BOX_Y / 2, BOX_Z - USB_Z - 10.5]) rotate([0, 0, 180]) connector_tab();        
+        translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 7.5]) rotate([0, 0, 90]) connector_tab();
+        translate([BOX_X - 31 - 4, BOX_Y + 6, BOX_Z - USB_Z - 7.5]) rotate([0, 0, -90]) connector_tab();
+        translate([BOX_X + 6, BOX_Y / 2, BOX_Z - USB_Z - 7.5]) rotate([0, 0, 180]) connector_tab();
         
         difference() {
             intersection() {
@@ -219,5 +219,5 @@ module case_top() {
     }
 }
 
-//translate([0, 0, 5]) case_top();
-case_bottom();
+translate([0, 0, 5]) case_top();
+//case_bottom();
