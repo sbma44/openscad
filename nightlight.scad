@@ -162,6 +162,10 @@ module case_bottom() {
             translate([-5, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, 90, 0]) cylinder(d=CONE_DIAM_A, h=20, $fn=64);   
             translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), 0]) translate([BUTTON_X_INSET, BUTTON_Y / 2, -4]) cylinder(d=BUTTON_DIAM, h=4, $fn=64);
             translate([BOX_X - RADIUS, 5 * HEIGHT, BOX_Z / 2]) rotate([90, 0, 0]) cylinder(d=HOLE_DIAM + 2, h=50, $fn=64);        
+            translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), -30 + BUTTON_Z_CLEARANCE - 0.6]) {
+                translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) cylinder(d=SCREW_HOLE_DIAM, h=30, $fn=64);
+                translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) cylinder(d=SCREW_HOLE_DIAM, h=30, $fn=64);                   
+            }
         }
         // tabs
         translate([BOX_X - 31 - 4, -6, BOX_Z - USB_Z - 12.5]) rotate([0, 0, 90]) connector_tab();
@@ -171,12 +175,37 @@ module case_bottom() {
         intersection() {
             ANCHOR_HEIGHT=30;
             union() {
-                translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) {
-                    translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
-                    translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
+                // inner
+                difference() {
+                    union() {
+                        translate([CONE_X + 0.5, 0, (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 3.6]) cube([SCREW_HOLE_DIAM + 2, BOX_Y, ANCHOR_HEIGHT]);
+                        translate([CONE_X + 0.5, (0.5 * (BOX_Y - BUTTON_Y)) - BOX_Y + BUTTON_HOLE_INSET, (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) cube([SCREW_HOLE_DIAM + 9, BOX_Y, ANCHOR_HEIGHT]);
+                        translate([CONE_X + 0.5, BOX_Y - (0.5 * (BOX_Y - BUTTON_Y)) - BUTTON_HOLE_INSET, (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) cube([SCREW_HOLE_DIAM + 9, BOX_Y, ANCHOR_HEIGHT]);
+                        translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) {
+                            translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
+                            translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) screw_anchor(ANCHOR_HEIGHT);
+                        }
+                    }
+                    translate([CONE_X, 0.5 * (BOX_Y - BUTTON_Y), (-1 * ANCHOR_HEIGHT) + BUTTON_Z_CLEARANCE - 0.6]) {
+                        translate([BUTTON_HOLE_INSET, BUTTON_HOLE_INSET, 0]) cylinder(d=SCREW_HOLE_DIAM, h=30, $fn=64);
+                        translate([BUTTON_HOLE_INSET, BUTTON_Y - BUTTON_HOLE_INSET, 0]) cylinder(d=SCREW_HOLE_DIAM, h=30, $fn=64);                   
+                    }
+                    translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM, $fn=64);
+                    translate([(BOX_X - 31 - 7 + 3.7), 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM, $fn=64);
                 }
-                translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, -1.5]) screw_anchor(BOX_Z - USB_Z - 10.5);
-                translate([(BOX_X - 31 - 7 + 3.7), 3.7, -1.5]) screw_anchor(BOX_Z - USB_Z - 10.5);
+                // outer
+                difference() {
+                    union() {
+                        translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM + 2, $fn=64);
+                        translate([(BOX_X - 31 - 7 + 3.7), 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM + 2, $fn=64);
+                        translate([BOX_X - 31 - 7 + 3.7 - (0.5 * (SCREW_HOLE_DIAM + 2)), 0, -1.5]) cube([SCREW_HOLE_DIAM + 2, 3.7, BOX_Z - USB_Z - 10.5]);
+                        translate([BOX_X - 31 - 7 + 3.7 - (0.5 * (SCREW_HOLE_DIAM + 2)), BOX_Y - 3.7, -1.5]) cube([SCREW_HOLE_DIAM + 2, 3.7, BOX_Z - USB_Z - 10.5]);
+                        // @TODO: ADD CUBES HERE
+                    }
+                    translate([(BOX_X - 31 - 7 + 3.7), BOX_Y - 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM, $fn=64);
+                    translate([(BOX_X - 31 - 7 + 3.7), 3.7, -1.5]) cylinder(h=BOX_Z - USB_Z - 10.5, d=SCREW_HOLE_DIAM, $fn=64);
+
+                }
 
             }
             translate([1.5, 2.5, 1.5]) resize([BOX_X, BOX_Y, BOX_Z]) case();
@@ -189,6 +218,8 @@ module case_bottom() {
             color("gray") translate([CONE_X, 0.5 * BOX_Y, BOX_Z - USB_Z - 7.5]) rotate([0, -90, 0]) cylinder(r1=CONE_DIAM_B * 0.5, r2=CONE_DIAM_A * 0.5, h=CONE_X, $fn=128);
             translate([-10, -10, BOX_Z - USB_Z - 7.5]) cube([100, 100, 50]);
         }
+        
+        //detente wheel
         translate([BOX_X - RADIUS, (-1 * HEIGHT) - 3, BOX_Z / 2]) rotate([90, 0, 0]) detent_wheel(0);
     }
 }
@@ -219,5 +250,5 @@ module case_top() {
     }
 }
 
-translate([0, 0, 5]) case_top();
-//case_bottom();
+//translate([0, 0, 5]) case_top();
+case_bottom();
