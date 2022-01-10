@@ -2,9 +2,9 @@ TUBE_INNER_DIAM = 17.5;
 FIN = 1;
 INNER_ROD_DIAM = 8.6 + 1;
 OUTER_ROD_DIAM = 15.5 + 0.5; // (0.5 fudge)
-DEPTH = 4;
+DEPTH = 3;
 TOTAL_DEPTH = 20;
-DEPTH_OFFSET = 1;
+DEPTH_OFFSET = 2;
 
 
 module main() {
