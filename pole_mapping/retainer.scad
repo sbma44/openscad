@@ -2,7 +2,7 @@ FUDGE = 1.05;
 
 DISC_WIDTH = 10;
 DISC_DIAMETER = 40;
-ROD_DIAMETER = 8;
+ROD_DIAMETER = 7;
 FIN_THICKNESS = 5;
 
 module m3_nut() {
@@ -32,7 +32,7 @@ difference() {
         // screw hole
         translate([-0.5 * DISC_DIAMETER, 0, 0.5 * DISC_WIDTH]) rotate([0, 90, 0]) cylinder(d=FUDGE * 3, h=0.5 * DISC_DIAMETER, $fn=64);
         // screw head inset
-        translate([-0.5 * DISC_DIAMETER, 0, 0.5 * DISC_WIDTH]) rotate([0, 90, 0]) cylinder(d=FUDGE * 4.8, h=2, $fn=64);
+        translate([-0.5 * DISC_DIAMETER, 0, 0.5 * DISC_WIDTH]) rotate([0, 90, 0]) cylinder(d=FUDGE * 4.8, h=4, $fn=64);
         
     }
     
