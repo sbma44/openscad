@@ -1,11 +1,11 @@
-TUBE_INNER_DIAM = 17.5;
+TUBE_INNER_DIAM = 17.5 + 0.5;
 FIN = 1;
 INNER_ROD_DIAM = 8.6 + 1;
 OUTER_ROD_DIAM = 15.5 + 0.5; // (0.5 fudge)
 DEPTH = 3;
-TOTAL_DEPTH = 20;
+TOTAL_DEPTH = 30;
 DEPTH_OFFSET = 2;
-
+FLATTEN = 0;
 
 module main() {
     difference() {
@@ -30,7 +30,12 @@ module fins() {
     }
 }
 
-union() {
-    main();
-    fins();
+
+rotate([0, -90, 0])
+difference() {
+    union() {
+        main();
+        fins();
+    }
+    translate([-0.5 * TUBE_INNER_DIAM, -0.5 * TUBE_INNER_DIAM, 0]) cube([FLATTEN, TUBE_INNER_DIAM, TOTAL_DEPTH]);
 }
