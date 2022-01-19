@@ -1,4 +1,4 @@
-TUBE_INNER_DIAM = 17.5 + 0.5;
+TUBE_INNER_DIAM = 17.5;
 FIN = 1;
 INNER_ROD_DIAM = 8.6 + 1;
 OUTER_ROD_DIAM = 15.5 + 0.5; // (0.5 fudge)
@@ -25,7 +25,8 @@ module fins() {
                 rotate([0, 0, i * (360 / STEPS)]) translate([0, 0, 0.5 * TOTAL_DEPTH]) cube([TUBE_INNER_DIAM, FIN, TOTAL_DEPTH], center=true);
             }
         }
-        cylinder(h=TOTAL_DEPTH, d=OUTER_ROD_DIAM, $fn=64);
+        cylinder(h=DEPTH+DEPTH_OFFSET, d=OUTER_ROD_DIAM, $fn=64);
+        cylinder(h=TOTAL_DEPTH, d=INNER_ROD_DIAM, $fn=64);
         translate([0, -1 * TUBE_INNER_DIAM, 0]) cube([TUBE_INNER_DIAM * 2, TUBE_INNER_DIAM * 2, TOTAL_DEPTH]); 
     }
 }
