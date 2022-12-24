@@ -30,7 +30,7 @@ module real_deal() {
     MOUNTING_HOLE_SEPARATION = 33;
     MOUNTING_HOLE_DIAM = 3.5;
     MOUNTING_HOLE_INSET = 5;
-    UNIT_HEIGHT = 25;
+    UNIT_HEIGHT = 22;
     
     difference() {
         translate([-15, -11, 0]) union() {
@@ -48,9 +48,18 @@ module real_deal() {
                 }
             }
         }
-        translate([UNIT_HEIGHT - MOUNTING_HOLE_INSET, 0, (HEIGHT - MOUNTING_HOLE_SEPARATION) / 2.0]) {
-            rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
-            translate([0, 0, MOUNTING_HOLE_SEPARATION]) rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
+        
+        
+        // bottom
+        hull() {
+            translate([UNIT_HEIGHT - MOUNTING_HOLE_INSET, 0, (HEIGHT - MOUNTING_HOLE_SEPARATION) / 2.0]) rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
+            translate([MOUNTING_HOLE_INSET, 0, (HEIGHT - MOUNTING_HOLE_SEPARATION) / 2.0]) rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
+        }
+
+        // top        
+        hull() {
+            translate([UNIT_HEIGHT - MOUNTING_HOLE_INSET, 0, ((HEIGHT - MOUNTING_HOLE_SEPARATION) / 2.0) + MOUNTING_HOLE_SEPARATION]) rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
+            translate([MOUNTING_HOLE_INSET, 0, ((HEIGHT - MOUNTING_HOLE_SEPARATION) / 2.0) + MOUNTING_HOLE_SEPARATION]) rotate([-90, 0, 0]) cylinder(h=13, d=MOUNTING_HOLE_DIAM, $fn=64);
         }
     }
 }
