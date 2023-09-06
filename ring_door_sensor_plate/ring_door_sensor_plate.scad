@@ -12,6 +12,14 @@ union() {
 }
 */
 
+s = 0.090;
+HEIGHT = 53;
+MOUNTING_HOLE_SEPARATION = 33;
+MOUNTING_HOLE_DIAM = 3.5;
+MOUNTING_HOLE_INSET = 5;
+UNIT_HEIGHT = 22;
+ROUNDED_CUBE_CYLINDER_DIAM = 12;
+
 module test(s, label) {
     union() {
         difference() {
@@ -24,14 +32,16 @@ module test(s, label) {
     }
 }
 
-module real_deal() {
-    s = 0.090;
-    HEIGHT = 53;
-    MOUNTING_HOLE_SEPARATION = 33;
-    MOUNTING_HOLE_DIAM = 3.5;
-    MOUNTING_HOLE_INSET = 5;
-    UNIT_HEIGHT = 22;
-    
+module rounded_cube() {
+    union() {
+        translate([21, 0, 6]) rotate([-90, 0, 0]) cylinder(d=ROUNDED_CUBE_CYLINDER_DIAM, h=100, $fn=64);
+        translate([21, 0, HEIGHT - 6]) rotate([-90, 0, 0]) cylinder(d=ROUNDED_CUBE_CYLINDER_DIAM, h=100, $fn=64);
+        translate([21, 0, 0]) cube([25 - 6, 100, HEIGHT]);
+        translate([15, 0, 6]) cube([25 - 6, 100, HEIGHT - ROUNDED_CUBE_CYLINDER_DIAM]);
+    }
+}
+
+module sensor_trim_mount() {
     difference() {
         translate([-15, -11, 0]) union() {
             intersection() {
@@ -40,12 +50,7 @@ module real_deal() {
                     linear_extrude(height=HEIGHT) scale([s, s, 1.0]) import("door_trim_profile.svg");
 
                 }
-                union() {
-                    translate([21, 0, 6]) rotate([-90, 0, 0]) cylinder(d=12, h=100, $fn=64);
-                    translate([21, 0, HEIGHT - 6]) rotate([-90, 0, 0]) cylinder(d=12, h=100, $fn=64);
-                    translate([21, 0, 0]) cube([25 - 6, 100, HEIGHT]);
-                    translate([15, 0, 6]) cube([25 - 6, 100, HEIGHT - 12]);
-                }
+                rounded_cube();
             }
         }
         
@@ -63,7 +68,16 @@ module real_deal() {
         }
     }
 }
-//test(0.092, "92");
-//translate([0, 20, 0]) test(0.091, "91");
-//translate([0, 40, 0]) test(0.090, "90");
-real_deal();
+
+module magnet_platform() {
+    PLATFORM_X = 11;
+    PLATFORM_Y = 12;
+    PLATFORM_Z = 53;
+    intersection() {
+        translate([-21 + (0.5 * ROUNDED_CUBE_CYLINDER_DIAM), 0, 0]) rounded_cube();
+        cube([PLATFORM_X, PLATFORM_Y, PLATFORM_Z]);
+    }
+}
+
+//sensor_trim_mount();
+magnet_platform();
