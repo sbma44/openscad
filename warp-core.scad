@@ -1,0 +1,2 @@
+HOLE_DIAM = 8;
+CM_PER_LED = 1.6;
