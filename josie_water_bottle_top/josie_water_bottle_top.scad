@@ -19,7 +19,7 @@ module footprint() {
 module cap_bump() {
     SCALE_X = 0.93;
     hull () {
-        translate([0, 2.5, 20]) linear_extrude(3) {
+        translate([0, 2.5, 22]) linear_extrude(3) {
             scale([(SCALE_X * SVG_SCALE), SVG_SCALE, 1]) import("top.svg", center=true);
         }
         
@@ -86,7 +86,7 @@ module bottle_top() {
         //        translate([0, 8, 20 + THICKNESS - 1]) rotate([0, 0, 180]) linear_extrude(10) scale([0.1, 0.1, 1]) import("lion3.svg", center=true);
 
         }
-        translate([0, 9, 20 + THICKNESS - 1]) rotate([0, 0, 0]) scale([1, 1, 0.1]) import("lion.clean.stl", center=true);
+        #translate([0, 9, 20 + THICKNESS + 0.5]) rotate([0, 0, 0]) scale([1, 1, 0.2]) import("lion.clean.stl", center=true);
     }
 }
 
