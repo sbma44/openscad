@@ -8,7 +8,7 @@ DISC_B_Z = 4 - TPU_WALL_THICKNESS;
 TOTAL_Z = 19.7;
 CHANNEL_Z = TOTAL_Z - (DISC_A_Z + DISC_B_Z);
 
-BEARING_DIAM_FUDGE = 0.5;
+BEARING_DIAM_FUDGE = 0.25;
 BEARING_DIAM = 22 + BEARING_DIAM_FUDGE;
 BEARING_INNER_DIAM = 9; // prob need to make this larger to ensure the bearing carries the shaft, not the plastic
 BEARING_Z = 7;
