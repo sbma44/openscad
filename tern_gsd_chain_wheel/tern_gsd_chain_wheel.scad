@@ -10,7 +10,7 @@ CHANNEL_Z = TOTAL_Z - (DISC_A_Z + DISC_B_Z);
 
 BEARING_DIAM_FUDGE = 0.25;
 BEARING_DIAM = 22 + BEARING_DIAM_FUDGE;
-BEARING_INNER_DIAM = 9; // prob need to make this larger to ensure the bearing carries the shaft, not the plastic
+BEARING_INNER_DIAM = 13; // have to clear the inner ring of metal
 BEARING_Z = 7;
 SNAP_SPHINCTER_FUDGE = 2;
 THREAD_EXTENSION = 0.5;
@@ -22,6 +22,11 @@ CENTER_CHANNEL_THICKNESS = 1;
 
 TAB_EXTENSION = 1.25;
 TAB_HEIGHT = 1;
+
+inch_in_cm = 2.54;
+inch_in_mm = inch_in_cm * 10;
+dpi = 300;
+SCALE_FACTOR = inch_in_mm / dpi;
 
 module bearing(fudge=0) {
     cylinder(d=BEARING_DIAM, h=BEARING_Z, $fn=128);
@@ -62,12 +67,25 @@ module hard_shell_a() {
 }
 
 module hard_shell_b() {
-    difference() {
+    union () {
+        difference() {
 
-        cylinder(d=OUTER_DIAM, h=SHELL_Z, $fn=128);
-        bearing();
-        OUTER_DEPRESSION_Z = TAB_HEIGHT + 1;
-        scale([THREAD_SCALE, THREAD_SCALE, 1]) thread();
+            cylinder(d=OUTER_DIAM, h=SHELL_Z, $fn=128);
+            bearing();
+            OUTER_DEPRESSION_Z = TAB_HEIGHT + 1;
+            scale([THREAD_SCALE, THREAD_SCALE, 1]) thread();
+        }
+        SCALE_FACTOR = 0.235;
+        rotate([180, 0, 0]) translate([3.25, 3, 0]) scale([SCALE_FACTOR, SCALE_FACTOR, 1]) linear_extrude(1) import("tomlee2.svg", center=true);
+        
+        translate([0, 0, -1]) difference() {
+            cylinder(d=OUTER_DIAM, h=1, $fn=128);
+            cylinder(d=OUTER_DIAM - 2, h=1, $fn=128);
+        }
+        translate([0, 0, -1]) difference() {
+            cylinder(d=INNER_DIAM, h=1, $fn=128);
+            cylinder(d=INNER_DIAM - 2, h=1, $fn=128);
+        }
     }
 }
 
