@@ -3,11 +3,15 @@
 
 SOCKET_THICKNESS = 2;
 SOCKET_FUDGE = 1;
-SOCKET_X = 84 + SOCKET_FUDGE;
+SOCKET_X = 85 + SOCKET_FUDGE;
 SOCKET_Y = 31 + SOCKET_FUDGE;
 SOCKET_Z = 50;
 
-TRAPEZOID_X = SOCKET_X - SOCKET_Y;
+M3_HEAD_Z = 3;
+M3_HEAD_DIAM = 5.5;
+M3_SHAFT_DIAM = 3;
+
+TRAPEZOID_X = SOCKET_X - SOCKET_Y - 2;
 TRAPEZOID_Y = 5;
 TRAPEZOID_FUDGE = 1;
 
@@ -19,20 +23,33 @@ module _rounded_trapezoid(x, y, z, thickness) {
     }
 
 }
-
+//
 module _mounting_trapezoid(x, y, z) {
     mirror([0, 1, 0]) linear_extrude(z) polygon([[0 + y, 0], [x - y, 0], [x, y], [0, y], [0+y, 0]]);
 }
 
 module xformer_socket() {
     translate([(0.5 * SOCKET_Y) + SOCKET_THICKNESS, (0.5 * SOCKET_Y) + SOCKET_THICKNESS, 0]) difference() {
-        _rounded_trapezoid(SOCKET_X, SOCKET_Y, SOCKET_Z, SOCKET_THICKNESS);
+        union() {
+            _rounded_trapezoid(SOCKET_X, SOCKET_Y, SOCKET_Z, SOCKET_THICKNESS);
+            // m3 connector A
+            translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), 0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE)]) cylinder(d=M3_HEAD_DIAM + SOCKET_FUDGE + SOCKET_THICKNESS, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
+            // m3 connector B
+            translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), -0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE)]) cylinder(d=M3_HEAD_DIAM + SOCKET_FUDGE + SOCKET_THICKNESS, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
+        }
         translate([0, 0, SOCKET_THICKNESS]) _rounded_trapezoid(SOCKET_X, SOCKET_Y, SOCKET_Z + SOCKET_THICKNESS, 0);
         cylinder(d=0.8 * SOCKET_Y, h=SOCKET_THICKNESS, $fn=64);
-    }
+        
+        // m3 connector A
+        translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), 0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE) + SOCKET_THICKNESS]) cylinder(d=M3_HEAD_DIAM + SOCKET_FUDGE, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
+        translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), 0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE)]) cylinder(d=M3_SHAFT_DIAM + SOCKET_FUDGE, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
+        // m3 connector B
+        translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), -0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE) + SOCKET_THICKNESS]) cylinder(d=M3_HEAD_DIAM + SOCKET_FUDGE, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
+        translate([0.5 * (SOCKET_X - (2 * SOCKET_THICKNESS) - SOCKET_Y), -0.25 * SOCKET_Y, -1 * (M3_HEAD_Z + SOCKET_FUDGE)]) cylinder(d=M3_SHAFT_DIAM + SOCKET_FUDGE, h=M3_HEAD_Z + SOCKET_THICKNESS + SOCKET_FUDGE, $fn=64);
 
+    }
+    
     translate([0.5 * (SOCKET_X + (2 * SOCKET_THICKNESS) - TRAPEZOID_X), 0, 2 * SOCKET_THICKNESS]) _mounting_trapezoid(TRAPEZOID_X, TRAPEZOID_Y, SOCKET_Z);
-    //translate([-0.5 * (SOCKET_Y + (2*SOCKET_THICKNESS)), 0, 0]) cube([SOCKET_X + (2 * SOCKET_THICKNESS), SOCKET_Y + (2 * SOCKET_THICKNESS), SOCKET_Z + (2 * SOCKET_THICKNESS)]);
 }
 
 module socket_mount() {
@@ -57,7 +74,7 @@ module socket_mount() {
                     }
                 }
             }
-            translate([0.5 * (CUBE_X - (TRAPEZOID_X + (2 * TRAPEZOID_FUDGE))), CUBE_Y, SOCKET_THICKNESS]) _mounting_trapezoid(TRAPEZOID_X + (2 * TRAPEZOID_FUDGE), TRAPEZOID_Y + TRAPEZOID_FUDGE, SOCKET_Z);
+            translate([0.5 * (CUBE_X - (TRAPEZOID_X + (2 * TRAPEZOID_FUDGE))), CUBE_Y, SOCKET_THICKNESS]) _mounting_trapezoid(TRAPEZOID_X + (4 * TRAPEZOID_FUDGE), TRAPEZOID_Y + TRAPEZOID_FUDGE, SOCKET_Z);
             
             // screw one
             translate([-0.25 * WING_DIAM, CUBE_Y, 0.5 * CUBE_Z]) rotate([90, 0, 0]) union() {
@@ -81,4 +98,4 @@ module cord_winder() {
 }
 
 xformer_socket();
-translate([0, -20, 0]) socket_mount();
+//translate([0, -20, 0]) socket_mount();
