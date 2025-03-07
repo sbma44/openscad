@@ -7,6 +7,8 @@ DISC_A_Z = 5.9 - TPU_WALL_THICKNESS;
 DISC_B_Z = 4 - TPU_WALL_THICKNESS;
 TOTAL_Z = 19.7;
 CHANNEL_Z = TOTAL_Z - (DISC_A_Z + DISC_B_Z);
+CONE_DIAM = 1.0 * OUTER_DIAM;
+CONE_EXTENSION_Z = 0.5 * DISC_B_Z;
 
 BEARING_DIAM_FUDGE = 0.25;
 BEARING_DIAM = 22 + BEARING_DIAM_FUDGE;
@@ -19,6 +21,7 @@ THREAD_SCALE = 1.035;
 SHELL_Z = DISC_A_Z - TPU_WALL_THICKNESS;
 
 CENTER_CHANNEL_THICKNESS = 1;
+CENTER_CHANNEL_AXIS_DIAM = BEARING_DIAM + (2 * CENTER_CHANNEL_THICKNESS);
 
 TAB_EXTENSION = 1.25;
 TAB_HEIGHT = 1;
@@ -56,12 +59,23 @@ module hard_shell_a() {
     
     translate([0, 0, 1]) difference() {
         union() {
-            cylinder(d=BEARING_DIAM + (2 * CENTER_CHANNEL_THICKNESS), h=TOTAL_Z - 1, $fn=128);
-            translate([0, 0, CHANNEL_Z + DISC_A_Z + TPU_WALL_THICKNESS]) cylinder(d=OUTER_DIAM, h=DISC_B_Z - TPU_WALL_THICKNESS, $fn=64);
+            cylinder(d=CENTER_CHANNEL_AXIS_DIAM, h=TOTAL_Z - 1, $fn=128);
+
+            // cone
+            translate([0, 0, CHANNEL_Z + DISC_A_Z + TPU_WALL_THICKNESS]) union () {
+                cylinder(d1=CENTER_CHANNEL_AXIS_DIAM, d2=OUTER_DIAM, h=(DISC_B_Z + CONE_EXTENSION_Z) - TPU_WALL_THICKNESS, $fn=64);
+                // supplemental ring
+                translate([0, 0, (DISC_B_Z + CONE_EXTENSION_Z) - TPU_WALL_THICKNESS]) difference() {
+                    cylinder(d=OUTER_DIAM, h=TPU_WALL_THICKNESS, $fn=64);
+                    cylinder(d=BEARING_DIAM + (2 * TPU_WALL_THICKNESS), h=2 * TPU_WALL_THICKNESS, $fn=64);
+                }
+            }
+            
             thread();
         }
         translate([0, 0, -1]) cylinder(d=BEARING_INNER_DIAM, h=TOTAL_Z, $fn=64);
         translate([0, 0, TOTAL_Z - BEARING_Z]) bearing();
+        #translate([0, 0, TOTAL_Z - BEARING_Z + CONE_EXTENSION_Z + TPU_WALL_THICKNESS]) bearing();
         translate([0, 0, -1]) bearing();
     }
 }
@@ -95,9 +109,17 @@ module tpu_lining() {
         union() {
             cylinder(d=INNER_DIAM, h=CHANNEL_Z + (2 * TPU_WALL_THICKNESS), $fn=128);
             cylinder(d = OUTER_DIAM, h=TPU_WALL_THICKNESS, $fn=128);
-            translate([0, 0, (CHANNEL_Z + TPU_WALL_THICKNESS)]) cylinder(d = OUTER_DIAM, h=TPU_WALL_THICKNESS, $fn=128);
+
+            // cone
+            union () {
+                translate([0, 0, CHANNEL_Z]) cylinder(d1=CENTER_CHANNEL_AXIS_DIAM, d2=OUTER_DIAM, h=(DISC_B_Z + CONE_EXTENSION_Z) - TPU_WALL_THICKNESS, $fn=64);
+                translate([0, 0, CHANNEL_Z + (DISC_B_Z + CONE_EXTENSION_Z) - TPU_WALL_THICKNESS]) cylinder(d=OUTER_DIAM, h=TPU_WALL_THICKNESS, $fn=64);
+            }
         }
         cylinder(d=BEARING_DIAM + (2 * CENTER_CHANNEL_THICKNESS), h=TOTAL_Z, $fn=128);
+
+        // cone inner
+        #translate([0, 0, CHANNEL_Z + TPU_WALL_THICKNESS]) cylinder(d1=CENTER_CHANNEL_AXIS_DIAM, d2=OUTER_DIAM, h=(DISC_B_Z + CONE_EXTENSION_Z) - TPU_WALL_THICKNESS, $fn=64);
     }
 }
 
